@@ -13,7 +13,7 @@ jobs:
       uses: google-github-actions/setup-gcloud@v1
     - name: Verify the Google Cloud SDK installation
       run: gcloud info
-    - uses: ./setup-registry.yaml
+    - uses: ./setup-registry
       with:
         project: $GOOGLE_CLOUD_PROJECT
         address: apigeeregistry.googleapis.com:443
