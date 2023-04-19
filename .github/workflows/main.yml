@@ -3,7 +3,7 @@ on: [push]
 jobs:
   test-cloud:
     runs-on: ubuntu-latest
-    name: Access cloud registry
+    name: Run against google cloud registry
     steps:
     - uses: actions/checkout@v3
     - uses: google-github-actions/auth@v1
@@ -27,7 +27,7 @@ jobs:
 
   test-local-sqlite:
     runs-on: ubuntu-latest
-    name: Run and access local registry
+    name: Run against local registry on sqlite3
     steps:
     - uses: actions/checkout@v3
     - uses: ./setup-registry
@@ -58,7 +58,7 @@ jobs:
 
   test-local-postgres:
     runs-on: ubuntu-latest
-    name: Run and access local registry
+    name: Run against local registry on postgres
     steps:
     - uses: actions/checkout@v3
     - uses: ./setup-registry
