@@ -1,0 +1,28 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: setup registry
+    steps:
+    - uses: actions/checkout@v3
+    - uses: google-github-actions/auth@v1
+      with:
+        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+    - name: Set up the Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+    - name: Verify the Google Cloud SDK installation
+      run: gcloud info
+    - uses: ../../setup-registry.yaml
+      with:
+        project: $GOOGLE_CLOUD_PROJECT
+        address: apigeeregistry.googleapis.com:443
+        location: global
+        token-source: gcloud auth print-access-token
+        insecure: false          
+        # project: local
+        # address: locahost
+        # location: global
+        # insecure: true
+    - name: Run a query
+      run: registry get artifacts
