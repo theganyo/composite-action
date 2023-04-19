@@ -27,7 +27,7 @@ jobs:
 
   test-local:
     runs-on: ubuntu-latest
-    name: run and access local registry
+    name: Run and access local registry
     steps:
     - uses: actions/checkout@v3
     - uses: ./registry-server
@@ -39,8 +39,8 @@ jobs:
         address: localhost
         location: global
         insecure: true
-    - name: create a project
-      run: registry rpc create-project project
+    - name: Create a project
+      run: registry rpc admin create-project --project_id project
     - name: Apply an API
       run: registry apply -f api.yaml
     - name: Run a query
