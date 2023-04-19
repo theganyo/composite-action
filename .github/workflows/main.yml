@@ -1,89 +1,55 @@
 on: [push]
 
 jobs:
-  # test-cloud:
-  #   runs-on: ubuntu-latest
-  #   name: Run against google cloud registry
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - uses: google-github-actions/auth@v1
-  #     with:
-  #       credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
-  #   - name: Set up the Google Cloud SDK
-  #     uses: google-github-actions/setup-gcloud@v1
-  #   - name: Capture GOOGLE_CLOUD_PROJECT env
-  #     run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
-  #   - name: Verify the Google Cloud SDK installation
-  #     run: gcloud info
-  #   - uses: ./setup-registry
-  #     with:
-  #       project: ${{ env.GOOGLE_CLOUD_PROJECT }}
-  #       address: apigeeregistry.googleapis.com:443
-  #       token-source: gcloud auth print-access-token
-  #       insecure: false
-  #   - name: Run a query
-  #     run: registry get artifacts
-
-  test-local-sqlite:
+  test-check-and-apply:
     runs-on: ubuntu-latest
-    name: Run against local registry on sqlite3
+    name: Check an API locally and apply it 
     env:
       REGISTRY_VERSION: v0.6.10
-      REGISTRY_PROJECT: test
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./setup-registry
-      with:
-        insecure: true
-        version: ${{ env.REGISTRY_VERSION }}
-        project: ${{ env.REGISTRY_PROJECT }}
-    - name: Create a project
-      run: registry rpc admin create-project --project_id ${{ env.REGISTRY_PROJECT }}
-    - name: Apply an API
-      run: registry apply -f api.yaml
-    - name: Run check on APIs
-      run: registry check apis/-
+      API: api.yaml
     services:
-      registry-server:
+      local-registry:
         image: ghcr.io/apigee/registry-server:main
         env:
           REGISTRY_LOGGING_LEVEL: debug
         ports:
           - 8080:8080
+    steps:
+    - uses: actions/checkout@v3
 
-  # test-local-postgres:
-  #   runs-on: ubuntu-latest
-  #   name: Run against local registry on postgres
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - uses: ./setup-registry
-  #     with:
-  #       insecure: true
-  #       project: project
-  #   - name: Create a project
-  #     run: registry rpc admin create-project --project_id project
-  #   - name: Apply an API
-  #     run: registry apply -f api.yaml
-  #   - name: Run a query
-  #     run: registry get apis
-  #   services:
-  #     registry-database:
-  #       image: postgres:latest
-  #       env:
-  #         POSTGRES_PASSWORD: passw0rd
-  #         POSTGRES_DB: apigee_registry
-  #         POSTGRES_USER: postgres
-  #         PGUSER: postgres
-  #       options: >- # wait until postgres has started
-  #         --health-cmd pg_isready
-  #         --health-interval 10s
-  #         --health-timeout 5s
-  #         --health-retries 5
-  #     registry-server:
-  #       image: ghcr.io/apigee/registry-server:main
-  #       env:
-  #         REGISTRY_DATABASE_DRIVER: postgres
-  #         REGISTRY_DATABASE_CONFIG: host=registry-database port=5432 user=postgres dbname=apigee_registry password=passw0rd sslmode=disable
-  #         REGISTRY_LOGGING_LEVEL: debug
-  #       ports:
-  #         - 8080:8080
+    # setup google cloud
+    - uses: google-github-actions/auth@v1
+      with:
+        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+    - name: Set up the Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+    - name: Capture GOOGLE_CLOUD_PROJECT env
+      run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
+    - name: Verify the Google Cloud SDK installation
+      run: gcloud info
+
+    # apply and test API on local registry
+    - uses: ./registry-config
+      with:
+        name: local
+        address: locahost:8080
+        insecure: true
+        version: ${{ env.REGISTRY_VERSION }}
+        project: test
+    - name: Create a project
+      run: registry rpc admin create-project --project_id test
+    - name: Apply an API for a local check
+      run: registry apply -f ${{ env.API }}
+    - name: Run check on APIs
+      run: registry check apis/- # TODO: return !0 for failure
+
+    # apply checked API to cloud registry
+    - uses: ./registry-config
+      with:
+        name: cloud
+        project: ${{ env.GOOGLE_CLOUD_PROJECT }}
+        address: apigeeregistry.googleapis.com:443
+        token-source: gcloud auth print-access-token
+        insecure: false
+    - name: Apply API to cloud registry
+      run: registry apply -f ${{ env.API }}

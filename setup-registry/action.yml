@@ -12,14 +12,16 @@ inputs:
     description: The Registry version label to use.
     required: false
     default: latest
+  name:
+    description: The config name to create.
+    required: false
+    default: default
   address:
     description: The server and port of the Registry API.
     required: true
-    default: localhost:8080
   insecure:
     description: If true, client connects via http (not https).
     required: false
-    default: "false"
   location:
     description: The Registry location.
     required: false
@@ -36,13 +38,15 @@ runs:
     - name: Install the Registry CLI
       shell: bash
       run: |
-        export REGISTRY_VERSION=${{ inputs.version }}
-        curl -L https://raw.githubusercontent.com/apigee/registry/main/downloadLatest.sh | sh -
-        echo "$HOME/.registry/bin" >> $GITHUB_PATH
+        if ! command -v registry &> /dev/null; then
+          export REGISTRY_VERSION=${{ inputs.version }}
+          curl -L https://raw.githubusercontent.com/apigee/registry/main/downloadLatest.sh | sh -
+          echo "$HOME/.registry/bin" >> $GITHUB_PATH
+        fi
     - name: Configure the Apigee Registry CLI
       shell: bash
       run: |
-        registry config configurations create default
+        registry config configurations create '${{ inputs.name }}'
         registry config set address '${{ inputs.address }}'
         registry config set token-source '${{ inputs.token-source }}'
         registry config set location '${{ inputs.location }}'
