@@ -35,7 +35,8 @@ runs:
       shell: bash
       run: |
         registry config configurations create default
-        registry config set address ${{ inputs.address }}
-        registry config set token-source ${{ inputs.token-source }}
-        registry config set location ${{ inputs.location }}
-        registry config set project ${{ inputs.project }}
+        registry config set address '${{ inputs.address }}'
+        registry config set token-source '${{ inputs.token-source }}'
+        registry config set location '${{ inputs.location }}'
+        registry config set project '${{ inputs.project }}'
+        registry config set insecure '${{ inputs.insecure }}'
