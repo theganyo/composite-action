@@ -46,10 +46,11 @@ jobs:
     - name: Run a query
       run: registry get apis
     services:
-      registry:
-        image: docker pull ghcr.io/apigee/registry-server:latest
+      registry-server:
+        image: ghcr.io/apigee/registry-server:main
         env:
-          REGISTRY_DATABASE_CONFIG: "host=registry-database port=5432 user=postgres dbname=apigee_registry password=passw0rd sslmode=disable"
+          REGISTRY_DATABASE_DRIVER: sqlite
+          REGISTRY_DATABASE_CONFIG: ""
           REGISTRY_LOGGING_LEVEL: debug
           REGISTRY_LOGGING_FORMAT: text
           REGISTRY_PUBSUB_ENABLE: false
