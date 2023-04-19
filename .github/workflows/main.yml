@@ -1,9 +1,9 @@
 on: [push]
 
 jobs:
-  test:
+  test-cloud:
     runs-on: ubuntu-latest
-    name: setup registry
+    name: access cloud registry
     steps:
     - uses: actions/checkout@v3
     - uses: google-github-actions/auth@v1
@@ -24,3 +24,24 @@ jobs:
         insecure: false          
     - name: Run a query
       run: registry get artifacts
+
+  test-local:
+    runs-on: ubuntu-latest
+    name: run and access local registry
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./registry-server
+      with:
+        config: server-config.yml
+    - uses: ./setup-registry
+      with:
+        project: project
+        address: localhost
+        location: global
+        insecure: true
+    - name: create a project
+      run: registry rpc create-project project
+    - name: Apply an API
+      run: registry apply -f api.yaml
+    - name: Run a query
+      run: registry get apis

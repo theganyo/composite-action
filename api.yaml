@@ -1,0 +1,6 @@
+apiVersion: apigeeregistry/v1
+kind: API
+metadata:
+  name: helloworld
+data:
+  displayName: helloworld
