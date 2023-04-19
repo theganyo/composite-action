@@ -33,7 +33,7 @@ jobs:
     - uses: ./setup-registry
       with:
         project: project
-        address: registry-server:8080
+        address: localhost:8080
         location: global
         insecure: true
     - name: Create a project
