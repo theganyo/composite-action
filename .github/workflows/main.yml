@@ -25,7 +25,38 @@ jobs:
     - name: Run a query
       run: registry get artifacts
 
-  test-local:
+  test-local-sqlite:
+    runs-on: ubuntu-latest
+    name: Run and access local registry
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./setup-registry
+      with:
+        project: project
+        address: localhost:8080
+        location: global
+        insecure: true
+    - name: Create a project
+      run: registry rpc admin create-project --project_id project
+    - name: Apply an API
+      run: registry apply -f api.yaml
+    - name: Run a query
+      run: registry get apis
+    services:
+      registry-server:
+        image: ghcr.io/apigee/registry-server:main
+        env:
+          REGISTRY_DATABASE_DRIVER: sqlite3
+          REGISTRY_DATABASE_CONFIG: ""
+          REGISTRY_LOGGING_LEVEL: debug
+          REGISTRY_LOGGING_FORMAT: text
+          REGISTRY_PUBSUB_ENABLE: false
+          REGISTRY_PUBSUB_PROJECT: ""
+          PORT: 8080
+        ports:
+          - 8080:8080
+
+  test-local-postgres:
     runs-on: ubuntu-latest
     name: Run and access local registry
     steps:
@@ -50,8 +81,7 @@ jobs:
           POSTGRES_DB: apigee_registry
           POSTGRES_USER: postgres
           PGUSER: postgres
-        # Set health checks to wait until postgres has started
-        options: >-
+        options: >- # wait until postgres has started
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
@@ -59,10 +89,8 @@ jobs:
       registry-server:
         image: ghcr.io/apigee/registry-server:main
         env:
-          # REGISTRY_DATABASE_DRIVER: sqlite3
-          # REGISTRY_DATABASE_CONFIG: ""
           REGISTRY_DATABASE_DRIVER: postgres
-          REGISTRY_DATABASE_CONFIG: "host=registry-database port=5432 user=postgres dbname=apigee_registry password=passw0rd sslmode=disable"
+          REGISTRY_DATABASE_CONFIG: host=registry-database port=5432 user=postgres dbname=apigee_registry password=passw0rd sslmode=disable
           REGISTRY_LOGGING_LEVEL: debug
           REGISTRY_LOGGING_FORMAT: text
           REGISTRY_PUBSUB_ENABLE: false
