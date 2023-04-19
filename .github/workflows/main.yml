@@ -11,18 +11,16 @@ jobs:
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
     - name: Set up the Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
+    - name: Capture GOOGLE_CLOUD_PROJECT env
+      run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
     - name: Verify the Google Cloud SDK installation
       run: gcloud info
     - uses: ./setup-registry
       with:
-        project: $GOOGLE_CLOUD_PROJECT
+        project: ${{ env.GOOGLE_CLOUD_PROJECT }}
         address: apigeeregistry.googleapis.com:443
         location: global
         token-source: gcloud auth print-access-token
         insecure: false          
-        # project: local
-        # address: locahost
-        # location: global
-        # insecure: true
     - name: Run a query
       run: registry get artifacts
