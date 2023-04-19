@@ -25,15 +25,16 @@ jobs:
   #     run: registry get artifacts
 
   test-local-sqlite:
+    runs-on: ubuntu-latest
+    name: Run against local registry on sqlite3
     env:
       REGISTRY_VERSION: v0.6.10
       REGISTRY_PROJECT: test
-    runs-on: ubuntu-latest
-    name: Run against local registry on sqlite3
     steps:
     - uses: actions/checkout@v3
     - uses: ./setup-registry
       with:
+        insecure: true
         version: ${{ env.REGISTRY_VERSION }}
         project: ${{ env.REGISTRY_PROJECT }}
     - name: Create a project
@@ -57,6 +58,7 @@ jobs:
   #   - uses: actions/checkout@v3
   #   - uses: ./setup-registry
   #     with:
+  #       insecure: true
   #       project: project
   #   - name: Create a project
   #     run: registry rpc admin create-project --project_id project
