@@ -1,27 +1,34 @@
 name: Setup Apigee Registry CLI
-description: Install and configure Apigee registry CLI
+description: Install and configure Apigee Registry CLI
 author: Apigee Registry Authors
 branding:
   color: red
   icon: cloud-lightning
 inputs:
-  address:
-    description: The server and port of the Registry API (eg. localhost:8080).
-    required: true
-  insecure:
-    description: If true, client connects via http (not https).
-    required: false
-  location:
-    description: The Registry location (eg. global).
-    required: true
   project:
     description: The Registry project.
     required: true
+  version:
+    description: The Registry version label to use.
+    required: false
+    default: latest
+  address:
+    description: The server and port of the Registry API.
+    required: true
+    default: localhost:8080
+  insecure:
+    description: If true, client connects via http (not https).
+    required: false
+    default: "false"
+  location:
+    description: The Registry location.
+    required: false
+    default: global
   token:
-    description: The token to use for authorization to the Registry.
+    description: A token to use for authorization to the Registry.
     required: false
   token-source:
-    description: A token-source to use for authorization to the Registry.
+    description: A shell command to use to generate an authorization token for the Registry.
     required: false
 runs:
   using: composite
@@ -29,6 +36,7 @@ runs:
     - name: Install the Registry CLI
       shell: bash
       run: |
+        export REGISTRY_VERSION=${{ inputs.version }}
         curl -L https://raw.githubusercontent.com/apigee/registry/main/downloadLatest.sh | sh -
         echo "$HOME/.registry/bin" >> $GITHUB_PATH
     - name: Configure the Apigee Registry CLI

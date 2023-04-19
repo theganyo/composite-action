@@ -1,6 +1,0 @@
-database:
-  driver: sqlite3
-  config:
-monitoring:
-  enable: true
-  address: :9090

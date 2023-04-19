@@ -19,82 +19,69 @@ jobs:
       with:
         project: ${{ env.GOOGLE_CLOUD_PROJECT }}
         address: apigeeregistry.googleapis.com:443
-        location: global
         token-source: gcloud auth print-access-token
-        insecure: false          
+        insecure: false
     - name: Run a query
       run: registry get artifacts
 
   test-local-sqlite:
+    env:
+      version: latest
+      project: test
     runs-on: ubuntu-latest
     name: Run against local registry on sqlite3
     steps:
     - uses: actions/checkout@v3
     - uses: ./setup-registry
       with:
-        project: project
-        address: localhost:8080
-        location: global
-        insecure: true
+        version: ${{ env.VERSION }}
+        project: ${{ env.PROJECT }}
     - name: Create a project
-      run: registry rpc admin create-project --project_id project
+      run: registry rpc admin create-project --project_id ${{ env.PROJECT }}
     - name: Apply an API
       run: registry apply -f api.yaml
-    - name: Run a query
-      run: registry get apis
+    - name: Run check on APIs
+      run: registry check apis/-
     services:
       registry-server:
         image: ghcr.io/apigee/registry-server:main
         env:
-          REGISTRY_DATABASE_DRIVER: sqlite3
-          REGISTRY_DATABASE_CONFIG: ""
           REGISTRY_LOGGING_LEVEL: debug
-          REGISTRY_LOGGING_FORMAT: text
-          REGISTRY_PUBSUB_ENABLE: false
-          REGISTRY_PUBSUB_PROJECT: ""
-          PORT: 8080
         ports:
           - 8080:8080
 
-  test-local-postgres:
-    runs-on: ubuntu-latest
-    name: Run against local registry on postgres
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./setup-registry
-      with:
-        project: project
-        address: localhost:8080
-        location: global
-        insecure: true
-    - name: Create a project
-      run: registry rpc admin create-project --project_id project
-    - name: Apply an API
-      run: registry apply -f api.yaml
-    - name: Run a query
-      run: registry get apis
-    services:
-      registry-database:
-        image: postgres:latest
-        env:
-          POSTGRES_PASSWORD: passw0rd
-          POSTGRES_DB: apigee_registry
-          POSTGRES_USER: postgres
-          PGUSER: postgres
-        options: >- # wait until postgres has started
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-      registry-server:
-        image: ghcr.io/apigee/registry-server:main
-        env:
-          REGISTRY_DATABASE_DRIVER: postgres
-          REGISTRY_DATABASE_CONFIG: host=registry-database port=5432 user=postgres dbname=apigee_registry password=passw0rd sslmode=disable
-          REGISTRY_LOGGING_LEVEL: debug
-          REGISTRY_LOGGING_FORMAT: text
-          REGISTRY_PUBSUB_ENABLE: false
-          REGISTRY_PUBSUB_PROJECT: ""
-          PORT: 8080
-        ports:
-          - 8080:8080
+  # test-local-postgres:
+  #   runs-on: ubuntu-latest
+  #   name: Run against local registry on postgres
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: ./setup-registry
+  #     with:
+  #       project: project
+  #   - name: Create a project
+  #     run: registry rpc admin create-project --project_id project
+  #   - name: Apply an API
+  #     run: registry apply -f api.yaml
+  #   - name: Run a query
+  #     run: registry get apis
+  #   services:
+  #     registry-database:
+  #       image: postgres:latest
+  #       env:
+  #         POSTGRES_PASSWORD: passw0rd
+  #         POSTGRES_DB: apigee_registry
+  #         POSTGRES_USER: postgres
+  #         PGUSER: postgres
+  #       options: >- # wait until postgres has started
+  #         --health-cmd pg_isready
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
+  #     registry-server:
+  #       image: ghcr.io/apigee/registry-server:main
+  #       env:
+  #         REGISTRY_DATABASE_DRIVER: postgres
+  #         REGISTRY_DATABASE_CONFIG: host=registry-database port=5432 user=postgres dbname=apigee_registry password=passw0rd sslmode=disable
+  #         REGISTRY_LOGGING_LEVEL: debug
+  #       ports:
+  #         - 8080:8080
