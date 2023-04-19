@@ -23,16 +23,19 @@ jobs:
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
     - name: Set up the Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
+      with:
+        skip_install: true
     - name: Capture GOOGLE_CLOUD_PROJECT env
       run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
     - name: Verify the Google Cloud SDK installation
       run: gcloud info
 
+
     # apply and test API on local registry
     - uses: ./registry-config
       with:
         name: local
-        address: locahost:8080
+        address: localhost:8080
         insecure: true
         version: ${{ env.REGISTRY_VERSION }}
         project: test
