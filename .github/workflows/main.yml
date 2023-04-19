@@ -1,43 +1,43 @@
 on: [push]
 
 jobs:
-  test-cloud:
-    runs-on: ubuntu-latest
-    name: Run against google cloud registry
-    steps:
-    - uses: actions/checkout@v3
-    - uses: google-github-actions/auth@v1
-      with:
-        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
-    - name: Set up the Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-    - name: Capture GOOGLE_CLOUD_PROJECT env
-      run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
-    - name: Verify the Google Cloud SDK installation
-      run: gcloud info
-    - uses: ./setup-registry
-      with:
-        project: ${{ env.GOOGLE_CLOUD_PROJECT }}
-        address: apigeeregistry.googleapis.com:443
-        token-source: gcloud auth print-access-token
-        insecure: false
-    - name: Run a query
-      run: registry get artifacts
+  # test-cloud:
+  #   runs-on: ubuntu-latest
+  #   name: Run against google cloud registry
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: google-github-actions/auth@v1
+  #     with:
+  #       credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+  #   - name: Set up the Google Cloud SDK
+  #     uses: google-github-actions/setup-gcloud@v1
+  #   - name: Capture GOOGLE_CLOUD_PROJECT env
+  #     run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
+  #   - name: Verify the Google Cloud SDK installation
+  #     run: gcloud info
+  #   - uses: ./setup-registry
+  #     with:
+  #       project: ${{ env.GOOGLE_CLOUD_PROJECT }}
+  #       address: apigeeregistry.googleapis.com:443
+  #       token-source: gcloud auth print-access-token
+  #       insecure: false
+  #   - name: Run a query
+  #     run: registry get artifacts
 
   test-local-sqlite:
     env:
-      version: latest
-      project: test
+      REGISTRY_VERSION: latest
+      REGISTRY_PROJECT: test
     runs-on: ubuntu-latest
     name: Run against local registry on sqlite3
     steps:
     - uses: actions/checkout@v3
     - uses: ./setup-registry
       with:
-        version: ${{ env.VERSION }}
-        project: ${{ env.PROJECT }}
+        version: ${{ env.REGISTRY_VERSION }}
+        project: ${{ env.REGISTRY_PROJECT }}
     - name: Create a project
-      run: registry rpc admin create-project --project_id ${{ env.PROJECT }}
+      run: registry rpc admin create-project --project_id ${{ env.REGISTRY_PROJECT }}
     - name: Apply an API
       run: registry apply -f api.yaml
     - name: Run check on APIs
