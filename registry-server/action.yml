@@ -11,7 +11,12 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: run server
+    - name: Install the Registry Server
+      shell: bash
+      run: |
+        curl -L https://raw.githubusercontent.com/apigee/registry/main/downloadLatest.sh | sh -
+        echo "$HOME/.registry/bin" >> $GITHUB_PATH
+    - name: Run the Registry Server
       shell: bash
       run: |
         registry-server -c ${{ inputs.config }} & >server.out 2>server.err

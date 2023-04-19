@@ -45,3 +45,15 @@ jobs:
       run: registry apply -f api.yaml
     - name: Run a query
       run: registry get apis
+    services:
+      registry:
+        image: docker pull ghcr.io/apigee/registry-server:latest
+        env:
+          REGISTRY_DATABASE_CONFIG: "host=registry-database port=5432 user=postgres dbname=apigee_registry password=passw0rd sslmode=disable"
+          REGISTRY_LOGGING_LEVEL: debug
+          REGISTRY_LOGGING_FORMAT: text
+          REGISTRY_PUBSUB_ENABLE: false
+          REGISTRY_PUBSUB_PROJECT: ""
+          PORT: 8080
+        ports:
+          - 8080:8080
