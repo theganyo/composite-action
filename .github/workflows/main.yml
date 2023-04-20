@@ -4,6 +4,8 @@ jobs:
   test-check-and-apply:
     runs-on: ubuntu-latest
     name: Check an API locally and apply it 
+    permissions:
+      pull-requests: write # for checks-action
     env:
       REGISTRY_VERSION: v0.6.10
       API: api.yaml
