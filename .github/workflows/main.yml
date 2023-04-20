@@ -4,8 +4,6 @@ jobs:
   test-check-and-apply:
     runs-on: ubuntu-latest
     name: Check an API locally and apply it 
-    permissions:
-      pull-requests: write # for checks-action
     env:
       REGISTRY_VERSION: v0.6.10
       API: api.yaml
@@ -48,15 +46,7 @@ jobs:
     - name: Apply an API for a local check
       run: registry apply -f ${{ env.API }}
     - name: Run check on APIs
-      run: registry check apis/-
-    - uses: LouisBrunner/checks-action@v1.6.0
-      if: always()
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        name: Check API
-        conclusion: ${{ job.status }}
-        output: |
-          {"summary":"Summary to do"}
+      run: registry check apis
 
     # # apply checked API to cloud registry
     # - uses: ./registry-config
