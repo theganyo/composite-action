@@ -30,12 +30,21 @@ outputs:
 runs:
   using: composite
   steps:
-    - id: check
-      name: Run Registry Check
+    - name: Run Registry Check
+      id: check      
       shell: bash
       run: |
         REPORT=$(registry check ${{ inputs.pattern }})
         echo "REPORT={REPORT}" >> $GITHUB_OUTPUT
-    - name: Error if problems
+    - name: Generate list using Markdown
       shell: bash
-      run: "echo ${{ steps.check.outputs.REPORT}} | grep 'problems: \\[\\]'"
+      run: |
+        echo "Report:" >> $GITHUB_STEP_SUMMARY
+        echo "```yaml" >> $GITHUB_STEP_SUMMARY
+        echo steps.check.outputs.REPORT >> $GITHUB_STEP_SUMMARY
+        echo "```" >> $GITHUB_STEP_SUMMARY
+
+    # - name: Error if problems
+    #   shell: bash
+    #   run: "echo ${{ steps.check.outputs.REPORT}} | grep 'problems: \\[\\]'"
+    #   echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
