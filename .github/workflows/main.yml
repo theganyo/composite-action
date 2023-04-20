@@ -54,7 +54,7 @@ jobs:
         name: Check API
         conclusion: ${{ job.status }}
         output: |
-          {"summary":"${{ "Summary to do" }}"}
+          {"summary":"Summary to do"}
 
     # # apply checked API to cloud registry
     # - uses: ./registry-config
