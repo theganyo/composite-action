@@ -39,7 +39,6 @@ runs:
     - name: Generate list using Markdown
       shell: bash
       run: |
-        echo ${{steps.check.outputs.REPORT}}
         echo "Report:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "```" >> $GITHUB_STEP_SUMMARY
