@@ -33,16 +33,13 @@ runs:
     - name: Run Registry Check
       id: check      
       shell: bash
-      run: |
-        REPORT=$(registry check ${{ inputs.pattern }})
-        echo ${REPORT}
-        echo "REPORT=${REPORT}" >> $GITHUB_OUTPUT
+      run: echo "REPORT=$(registry check ${{ inputs.pattern }})" >> $GITHUB_OUTPUT
     - name: Generate list using Markdown
       shell: bash
       run: |
         echo "Report:" >> $GITHUB_STEP_SUMMARY
         echo "```yaml" >> $GITHUB_STEP_SUMMARY
-        echo steps.check.outputs.REPORT >> $GITHUB_STEP_SUMMARY
+        echo ${{steps.check.outputs.REPORT}} >> $GITHUB_STEP_SUMMARY
         echo "```" >> $GITHUB_STEP_SUMMARY
     - shell: bash
       run: echo $GITHUB_STEP_SUMMARY
