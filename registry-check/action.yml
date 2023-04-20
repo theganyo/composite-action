@@ -34,7 +34,7 @@ runs:
       name: Run Registry Check
       shell: bash
       run: |
-        REPORT=$(registry check apis ${{ inputs.pattern }})
+        REPORT=$(registry check ${{ inputs.pattern }})
         echo "REPORT={REPORT}" >> $GITHUB_OUTPUT
     - name: Error if problems
       shell: bash
