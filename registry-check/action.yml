@@ -26,14 +26,16 @@ inputs:
 outputs:
   report:
     description: Check Report
-    value: ${{ steps.check.outputs }}
+    value: ${{ steps.check.outputs.REPORT }}
 runs:
   using: composite
   steps:
     - id: check
       name: Run Registry Check
       shell: bash
-      run: registry check apis ${{ inputs.pattern }} >> $GITHUB_OUTPUT
+      run: |
+        REPORT=$(registry check apis ${{ inputs.pattern }})
+        echo "REPORT={REPORT}" >> $GITHUB_OUTPUT
     - name: Error if problems
       shell: bash
-      run: "echo $GITHUB_OUTPUT | grep 'problems: \\[\\]'"
+      run: "echo ${{ steps.check.outputs.REPORT}} | grep 'problems: \\[\\]'"
