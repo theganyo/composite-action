@@ -46,7 +46,9 @@ jobs:
     - name: Apply an API for a local check
       run: registry apply -f ${{ env.API }}
     - name: Run check on APIs
-      run: registry check apis
+      uses: ./registry-check
+      with:
+        pattern: apis/-
 
     # # apply checked API to cloud registry
     # - uses: ./registry-config

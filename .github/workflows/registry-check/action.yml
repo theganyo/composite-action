@@ -1,0 +1,39 @@
+name: Check Registry
+description: Check Registry
+author: Apigee Registry Authors
+branding:
+  color: red
+  icon: cloud-lightning
+inputs:
+  pattern:
+    description: A shell command to use to generate an authorization token for the Registry.
+    required: false
+  enable:
+    description: Todo 
+    required: false
+  disable:
+    description: Todo 
+    required: false
+  filter:
+    description: Todo 
+    required: false
+  jobs:
+    description: Todo 
+    required: false
+  error_on:
+    description: Todo
+    required: false
+outputs:
+  report:
+    description: Check Report
+    value: ${{ steps.check.outputs }}
+runs:
+  using: composite
+  steps:
+    - id: check
+      name: Run Registry Check
+      shell: bash
+      run: registry check apis ${{ inputs.pattern }} >> $GITHUB_OUTPUT
+    - name: Error if problems
+      shell: bash
+      run: "echo $GITHUB_OUTPUT | grep 'problems: \\[\\]'"
