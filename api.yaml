@@ -4,3 +4,5 @@ metadata:
   name: helloworld
 data:
   displayName: helloworld
+  test: test
+  
