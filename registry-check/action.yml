@@ -35,7 +35,7 @@ runs:
       shell: bash
       run: |
         REPORT=$(registry check ${{ inputs.pattern }})
-        echo "REPORT<<EOF"$'\n'"${{REPORT}}"$'\n'EOF >> $GITHUB_OUTPUT
+        echo "REPORT<<EOF"$'\n'"${REPORT}"$'\n'EOF >> $GITHUB_OUTPUT
     - name: Generate list using Markdown
       shell: bash
       run: |
