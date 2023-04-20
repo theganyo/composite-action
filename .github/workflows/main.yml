@@ -1,4 +1,4 @@
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test-check-and-apply:
@@ -46,15 +46,23 @@ jobs:
     - name: Apply an API for a local check
       run: registry apply -f ${{ env.API }}
     - name: Run check on APIs
-      run: registry check apis/- # TODO: return !0 for failure
-
-    # apply checked API to cloud registry
-    - uses: ./registry-config
+      run: registry check apis/-
+    - uses: LouisBrunner/checks-action@v1.6.0
+      if: always()
       with:
-        name: cloud
-        project: ${{ env.GOOGLE_CLOUD_PROJECT }}
-        address: apigeeregistry.googleapis.com:443
-        token-source: gcloud auth print-access-token
-        insecure: false
-    - name: Apply API to cloud registry
-      run: registry apply -f ${{ env.API }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Check API
+        conclusion: ${{ job.status }}
+        output: |
+          {"summary":"${{ "Summary to do" }}"}
+
+    # # apply checked API to cloud registry
+    # - uses: ./registry-config
+    #   with:
+    #     name: cloud
+    #     project: ${{ env.GOOGLE_CLOUD_PROJECT }}
+    #     address: apigeeregistry.googleapis.com:443
+    #     token-source: gcloud auth print-access-token
+    #     insecure: false
+    # - name: Apply API to cloud registry
+    #   run: registry apply -f ${{ env.API }}
