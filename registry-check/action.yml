@@ -42,7 +42,7 @@ runs:
         echo "Report:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "```" >> $GITHUB_STEP_SUMMARY
-        echo "REPORT<<EOF"$'\n'"${{steps.check.outputs.REPORT}}"$'\n'EOF >> $GITHUB_STEP_SUMMARY
+        echo "<<EOF"$'\n'"${{steps.check.outputs.REPORT}}"$'\n'EOF >> $GITHUB_STEP_SUMMARY
         echo "```" >> $GITHUB_STEP_SUMMARY
         echo "done" >> $GITHUB_STEP_SUMMARY
     # - name: Error if problems
