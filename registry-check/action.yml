@@ -39,8 +39,4 @@ runs:
         echo "Check Report:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo ""$'\n'"${REPORT}"$'\n' >> $GITHUB_STEP_SUMMARY
-        echo "done" >> $GITHUB_STEP_SUMMARY
-    # - name: Error if problems
-    #   shell: bash
-    #   run: "echo ${{ steps.check.outputs.REPORT}} | grep 'problems: \\[\\]'"
-    #   echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo $REPORT | grep 'problems: \\[\\]'
