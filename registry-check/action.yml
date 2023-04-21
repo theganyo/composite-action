@@ -41,7 +41,7 @@ runs:
         # echo "```" >> $GITHUB_STEP_SUMMARY
         # echo $REPORT >> $GITHUB_STEP_SUMMARY
         # echo "```" >> $GITHUB_STEP_SUMMARY
-        # echo "<<EOF"$'\n'"${REPORT}"$'\n'EOF >> $GITHUB_STEP_SUMMARY
+        echo ""$'\n'"${REPORT}"$'\n' >> $GITHUB_STEP_SUMMARY
         echo "done" >> $GITHUB_STEP_SUMMARY
     # - name: Error if problems
     #   shell: bash
