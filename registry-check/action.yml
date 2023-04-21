@@ -36,15 +36,21 @@ runs:
       run: |
         REPORT=$(registry check ${{ inputs.pattern }})
         echo "REPORT<<EOF"$'\n'"${REPORT}"$'\n'EOF >> $GITHUB_OUTPUT
-    - name: Generate list using Markdown
-      shell: bash
-      run: |
-        echo "Report:" >> $GITHUB_STEP_SUMMARY
+        echo "Check Report:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "```" >> $GITHUB_STEP_SUMMARY
-        echo "${{steps.check.outputs.REPORT}}" >> $GITHUB_STEP_SUMMARY
+        echo $REPORT >> $GITHUB_STEP_SUMMARY
         echo "```" >> $GITHUB_STEP_SUMMARY
         echo "done" >> $GITHUB_STEP_SUMMARY
+    # - name: Generate list using Markdown
+    #   shell: bash
+    #   run: |
+    #     echo "Report:" >> $GITHUB_STEP_SUMMARY
+    #     echo "" >> $GITHUB_STEP_SUMMARY
+    #     # echo "```" >> $GITHUB_STEP_SUMMARY
+    #     echo "${{steps.check.outputs.REPORT}}" >> $GITHUB_STEP_SUMMARY
+    #     # echo "```" >> $GITHUB_STEP_SUMMARY
+    #     echo "done" >> $GITHUB_STEP_SUMMARY
     # - name: Error if problems
     #   shell: bash
     #   run: "echo ${{ steps.check.outputs.REPORT}} | grep 'problems: \\[\\]'"
