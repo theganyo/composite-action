@@ -35,7 +35,7 @@ runs:
       shell: bash
       run: |
         REPORT=$(registry check ${{ inputs.pattern }})
-        echo "REPORT<<"$'\n'"${REPORT}"$'\n' >> $GITHUB_OUTPUT
+        echo "<<"$'\n'"${REPORT}"$'\n' >> $GITHUB_OUTPUT
         echo "Check Report:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         # echo "```" >> $GITHUB_STEP_SUMMARY
