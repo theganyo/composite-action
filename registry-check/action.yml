@@ -39,4 +39,4 @@ runs:
         echo "Check Report:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo ""$'\n'"${REPORT}"$'\n' >> $GITHUB_STEP_SUMMARY
-        echo $REPORT | grep 'problems: \\[\\]'
+        echo $REPORT | grep 'problems: \[\]'
