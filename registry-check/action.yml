@@ -38,9 +38,9 @@ runs:
         echo "REPORT<<EOF"$'\n'"${REPORT}"$'\n'EOF >> $GITHUB_OUTPUT
         echo "Check Report:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "```" >> $GITHUB_STEP_SUMMARY
+        # echo "```" >> $GITHUB_STEP_SUMMARY
         echo $REPORT >> $GITHUB_STEP_SUMMARY
-        echo "```" >> $GITHUB_STEP_SUMMARY
+        # echo "```" >> $GITHUB_STEP_SUMMARY
         echo "done" >> $GITHUB_STEP_SUMMARY
     # - name: Generate list using Markdown
     #   shell: bash
