@@ -17,9 +17,6 @@ inputs:
   filter:
     description: filter selected resources
     required: false
-  jobs:
-    description: number of actions to perform concurrently (default 10)
-    required: false
 outputs:
   report:
     description: Check Report
@@ -31,7 +28,7 @@ runs:
       id: check      
       shell: bash
       run: |
-        REPORT=$(registry check ${{ inputs.pattern }} --enable "${{ inputs.enable }}" --disable "${{ inputs.enable }}" --filter "${{ inputs.filter }}" --jobs "${{ inputs.filter }}" --filter "${{ inputs.filter }}")
+        REPORT=$(registry check ${{ inputs.pattern }} --enable "${{ inputs.enable }}" --disable "${{ inputs.enable }}" --filter "${{ inputs.filter }}")
         echo "REPORT<<EOF"$'\n'"${REPORT}"$'\n'EOF >> $GITHUB_OUTPUT
         echo "Check Report:" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
