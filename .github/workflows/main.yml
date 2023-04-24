@@ -17,22 +17,21 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # setup google cloud
-    - uses: google-github-actions/auth@v1
+    - name: Set up Google Cloud auth
+      uses: google-github-actions/auth@v1
       with:
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
     - name: Set up the Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
       with:
         skip_install: true
-    - name: Capture GOOGLE_CLOUD_PROJECT env
+    - name: Capture GOOGLE_CLOUD_PROJECT env var
       run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
     - name: Verify the Google Cloud SDK installation
       run: gcloud info
 
-
-    # apply and test API on local registry
-    - uses: ./registry-config
+    - name: Configure local Registry
+      uses: ./registry-config
       with:
         name: local
         address: localhost:8080

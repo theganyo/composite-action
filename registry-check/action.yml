@@ -1,5 +1,5 @@
 name: Check Registry
-description: Check Registry
+description: Runs registry check command on registry. Exits with non-zero if any problems detected.
 author: Apigee Registry Authors
 branding:
   color: red
@@ -9,19 +9,16 @@ inputs:
     description: A shell command to use to generate an authorization token for the Registry.
     required: false
   enable:
-    description: Todo 
+    description: rules to enable
     required: false
   disable:
-    description: Todo 
+    description: rules to disable
     required: false
   filter:
-    description: Todo 
+    description: filter selected resources
     required: false
   jobs:
-    description: Todo 
-    required: false
-  error_on:
-    description: Todo
+    description: number of actions to perform concurrently (default 10)
     required: false
 outputs:
   report:
