@@ -31,7 +31,7 @@ jobs:
     - name: Run registry check
       run: registry apply -f ${{ env.API }}
     - name: Run check on APIs
-      uses: apigee/registry/.github/actions/setup-registry@main
+      uses: apigee/registry/.github/actions/registry-check@main
       with:
         enable: apihub
         pattern: projects/test
