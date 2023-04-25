@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check an API locally and apply it 
     env:
-      REGISTRY_VERSION: v0.6.10
+      REGISTRY_VERSION: main
       API: api.yaml
     services:
       local-registry:
