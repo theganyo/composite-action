@@ -5,6 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check an API locally and apply it 
     env:
+      REGISTRY_VERSION: v0.6.10
       API: api.yaml
     services:
       local-registry:
@@ -22,6 +23,7 @@ jobs:
         name: local
         address: localhost:8080
         insecure: true
+        version: ${{ env.REGISTRY_VERSION }}
         project: test
     - name: Create a project
       run: registry rpc admin create-project --project_id test
