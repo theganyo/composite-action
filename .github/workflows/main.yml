@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Configure local Registry
-      uses: apigee/registry/.github/actions/registry-config
+      uses: apigee/registry/.github/actions/setup-registry
       with:
         name: local
         address: localhost:8080
