@@ -32,7 +32,6 @@ jobs:
       - name: Run check on APIs
         uses: apigee/registry/.github/actions/registry-check@main
         with:
-          enable: apihub
           pattern: projects/test
           error-level: WARNING
 
