@@ -50,7 +50,7 @@ jobs:
         run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
       - name: Verify the Google Cloud SDK installation
         run: gcloud info
-      - uses: apigee/registry/.github/actions/registry-config
+      - uses: apigee/registry/.github/actions/setup-registry@main
         with:
           name: cloud
           project: ${{ env.GOOGLE_CLOUD_PROJECT }}
@@ -60,6 +60,6 @@ jobs:
       - name: Apply API to cloud registry
         run: registry apply -f ${{ env.API }}
       - name: Run check on APIs
-        uses: apigee/registry/.github/actions/registry-check
+        uses: apigee/registry/.github/actions/registry-check@main
         with:
           pattern: apis/-
