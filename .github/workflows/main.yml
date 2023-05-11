@@ -31,6 +31,7 @@ jobs:
           address: localhost:8080
           insecure: true
           project: test
+          version:
       - name: Create a project on local Registry
         run: registry rpc admin create-project --project_id test
       - name: Apply yaml to the local Registry
