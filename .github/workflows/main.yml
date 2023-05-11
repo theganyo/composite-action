@@ -28,7 +28,6 @@ jobs:
           insecure: true
           version: ""
           project: test
-          token-source: gcloud auth print-access-token
       - name: Create a project
         run: registry rpc admin create-project --project_id test
 
@@ -60,7 +59,7 @@ jobs:
           project: ${{ env.GOOGLE_CLOUD_PROJECT }}
           address: apigeeregistry.googleapis.com:443
           insecure: false
-
+          token-source: gcloud auth print-access-token
       - name: Apply API to cloud registry
         run: registry apply -f ${{ env.API }}
       - name: Run check on APIs
