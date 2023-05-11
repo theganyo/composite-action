@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   test-check-and-apply:
     runs-on: ubuntu-latest
-    name: Check an API locally and apply it 
+    name: Check an API locally and apply it
     env:
       API: api.yaml
     services:
@@ -14,52 +14,52 @@ jobs:
         ports:
           - 8080:8080
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Configure local Registry
-      uses: apigee/registry/.github/actions/setup-registry@main
-      with:
-        name: local
-        address: localhost:8080
-        insecure: true
-        version: ""
-        project: test
-    - name: Create a project
-      run: registry rpc admin create-project --project_id test
+      - name: Configure local Registry
+        uses: apigee/registry/.github/actions/setup-registry@main
+        with:
+          name: local
+          address: localhost:8080
+          insecure: true
+          version: ""
+          project: test
+      - name: Create a project
+        run: registry rpc admin create-project --project_id test
 
-    - name: Run registry check
-      run: registry apply -f ${{ env.API }}
-    - name: Run check on APIs
-      uses: apigee/registry/.github/actions/registry-check@main
-      with:
-        enable: apihub
-        pattern: projects/test
-        error-level: WARNING
+      - name: Run registry check
+        run: registry apply -f ${{ env.API }}
+      - name: Run check on APIs
+        uses: apigee/registry/.github/actions/registry-check@main
+        with:
+          enable: apihub
+          pattern: projects/test
+          error-level: WARNING
 
-    # # apply checked API to cloud registry
-    # - name: Set up Google Cloud auth
-    #   uses: google-github-actions/auth@v1
-    #   with:
-    #     credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
-    # - name: Set up the Google Cloud SDK
-    #   uses: google-github-actions/setup-gcloud@v1
-    #   with:
-    #     skip_install: true
-    # - name: Capture GOOGLE_CLOUD_PROJECT env var
-    #   run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
-    # - name: Verify the Google Cloud SDK installation
-    #   run: gcloud info
-    # - uses: apigee/registry/.github/actions/registry-config
-    #   with:
-    #     name: cloud
-    #     project: ${{ env.GOOGLE_CLOUD_PROJECT }}
-    #     address: apigeeregistry.googleapis.com:443
-    #     token-source: gcloud auth print-access-token
-    #     insecure: false
+      # apply checked API to cloud registry
+      - name: Set up Google Cloud auth
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: "projects/459884772743/locations/global/workloadIdentityPools/github/providers/github"
+          service_account: "registry-editor@my-project.iam.gserviceaccount.com"
+      - name: Set up the Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          skip_install: true
+      - name: Capture GOOGLE_CLOUD_PROJECT env var
+        run: echo "GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" >> $GITHUB_ENV
+      - name: Verify the Google Cloud SDK installation
+        run: gcloud info
+      - uses: apigee/registry/.github/actions/registry-config
+        with:
+          name: cloud
+          project: ${{ env.GOOGLE_CLOUD_PROJECT }}
+          address: apigeeregistry.googleapis.com:443
+          insecure: false
 
-    # - name: Apply API to cloud registry
-    #   run: registry apply -f ${{ env.API }}
-    # - name: Run check on APIs
-    #   uses: apigee/registry/.github/actions/registry-check
-    #   with:
-    #     pattern: apis/-
+      - name: Apply API to cloud registry
+        run: registry apply -f ${{ env.API }}
+      - name: Run check on APIs
+        uses: apigee/registry/.github/actions/registry-check
+        with:
+          pattern: apis/-
