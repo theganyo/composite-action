@@ -5,7 +5,6 @@ jobs:
     permissions:
       id-token: write # This is required for requesting the JWT
       contents: read # This is required for actions/checkout
-
     runs-on: ubuntu-latest
     name: Check an API locally and apply it
     env:
@@ -17,6 +16,7 @@ jobs:
           REGISTRY_LOGGING_LEVEL: debug
         ports:
           - 8080:8080
+
     steps:
       - uses: actions/checkout@v3
       - name: Configure a local Registry
@@ -43,14 +43,12 @@ jobs:
         with:
           workload_identity_provider: "projects/459884772743/locations/global/workloadIdentityPools/github/providers/github"
           service_account: "registry-editor@apigee-apihub-demo.iam.gserviceaccount.com"
-      - name: Set up the Google Cloud SDK
+      - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
-        with:
-          skip_install: true
       - uses: apigee/registry/.github/actions/setup-registry@main
         with:
           name: cloud
-          project: ${{ env.GCLOUD_PROJECT }}
+          project: ${{ env.GCP_PROJECT }}
           address: apigeeregistry.googleapis.com:443
           insecure: false
           token-source: gcloud auth print-access-token
