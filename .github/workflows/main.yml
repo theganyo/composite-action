@@ -28,6 +28,7 @@ jobs:
           insecure: true
           version: ""
           project: test
+          token-source: gcloud auth print-access-token
       - name: Create a project
         run: registry rpc admin create-project --project_id test
 
